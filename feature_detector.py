@@ -2,12 +2,14 @@ import cv2 as cv
 import numpy as np
 
 class FeatureDetector:
-    def __init__(self, img):
-        self.img = img
-        self.max_corners = 40
+    def __init__(self):
+        self.max_corners = 15
         self.quality_level = 0.001
         self.min_distance = 1
-        self.dim = (self.img.shape[0], self.img.shape[1])
+
+    def feed_image(self, img):
+        self.img = img
+        self.dim = (self.img.shape[1], self.img.shape[0])
         self.define_grid()
 
     def define_grid(self, x=10, y=10, x_lim=0, y_lim=0):
@@ -27,7 +29,10 @@ class FeatureDetector:
 
         for i in range(0, self.grid_y - self.grid_limit_y):
             for j in range(0, self.grid_x - self.grid_limit_x):
-                temp_corners = cv.goodFeaturesToTrack(self.img[int(y_step*i):int(y_step*(i+1)), int(x_step*j):int(x_step*(j+1))], self.max_corners, self.quality_level, self.min_distance)
+                temp_corners = cv.goodFeaturesToTrack(self.img[int(y_step*i):int(y_step*(i+1)), int(x_step*j):int(x_step*(j+1))],
+                                                      self.max_corners,
+                                                      self.quality_level,
+                                                      self.min_distance)
                 temp_corners = np.int0(temp_corners)
 
                 #add the grid difference

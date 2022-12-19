@@ -1,23 +1,33 @@
 from images import load_images
 from feature_detector import FeatureDetector
+from utils import Utils
 import cv2 as cv
 import numpy as np
 
 def preprocess_img(img):
-    width, height = 600, 600
+    #print(img.shape) #shape(height, width)
+    width, height = img.shape[1]//2, img.shape[0]//2
     dim = (width, height)
     resized_img = cv.resize(img, dim, interpolation = cv.INTER_AREA)
     img_grey = cv.cvtColor(resized_img, cv.COLOR_BGR2GRAY)
-    return img_grey
+    return img_grey, resized_img
 
 if __name__ == "__main__":
     #get images function takes (path to the first image, starting index to slice, ending index to slice)
     print("Getting Images....")
-    img_collection = load_images("/home/alejandro/Downloads/Run2/Center/frame000", 165, 300)
+    img_collection = load_images("/home/alejandro/Downloads/Run2/Center/frame000", 165, 170)
     print("Images loaded....")
 
-    current_image = preprocess_img(img_collection[5])
+    fd = FeatureDetector()
 
-    fd = FeatureDetector(current_image)
-    kp = fd.get_key_points()
-    print(kp)
+    for index, image in enumerate(img_collection):
+        current_gray_img, current_color_img = preprocess_img(image)
+        fd.feed_image(current_gray_img)
+        kp = fd.get_key_points()
+
+        print("Number of KeyPoints:", len(kp))
+
+        current_color_img = Utils.draw_circles(current_color_img, kp)
+        cv.imshow(f"Image {index}", current_color_img)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
