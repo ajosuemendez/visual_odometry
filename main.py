@@ -15,7 +15,7 @@ def preprocess_img(img):
 if __name__ == "__main__":
     #get images function takes (path to the first image, starting index to slice, ending index to slice)
     print("Getting Images....")
-    img_collection = Utils.load_images("/home/alejandro/Downloads/Run2/Center/frame000", 165, 170)
+    img_collection = Utils.load_images("/home/alejandro/Downloads/Run2/Center/frame000", 300, 310)
     print("Images loaded....")
 
     fd = FeatureDetector()
@@ -41,6 +41,11 @@ if __name__ == "__main__":
                                                         desc2 = matcher_extractor.get_current_desc())
 
             print(f"Num Matches: {len(matches)}")
+
+            current_color_img = Utils.draw_kp_vectors(current_color_img,
+                                                      matches,
+                                                      prev_kp = matcher_extractor.get_previous_kp(),
+                                                      current_kp = matcher_extractor.get_current_kp())
 
         print("Number of KeyPoints:", len(kp))
 
